@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn scp -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no sso-backend/scratch_test.js $user@$host:/tmp/
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    eof
+}
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "Running test script on server..."
+send "cd /home/admin1/sso-backend && node /tmp/scratch_test.js\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "rm /tmp/scratch_test.js\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

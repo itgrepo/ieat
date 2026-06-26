@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Backing up Nginx config on 14.207.128.141 ---"
+send "sudo cp /etc/nginx/conf.d/pmis_uat_ph2.conf /etc/nginx/conf.d/pmis_uat_ph2.conf.bak\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Modifying Nginx config to add /api/auth/sso-validate proxy rule ---"
+send "sudo sed -i 's|location /api {|location /api/auth/sso-validate {\\n       proxy_pass https://dsp.ieat.go.th/api/auth/sso-validate;\\n       proxy_ssl_server_name on;\\n    }\\n\\n    location /api {|' /etc/nginx/conf.d/pmis_uat_ph2.conf\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- Verifying Nginx configuration syntax ---"
+send "sudo nginx -t\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- Reloading Nginx ---"
+send "sudo systemctl reload nginx\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+send "exit\r"
+expect eof

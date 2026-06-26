@@ -1,0 +1,35 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Unzipping pmis-uat-phase2.zip to check structure ---"
+send "mkdir -p /tmp/pmis-zip && unzip -o /home/admin1/pmis-uat-phase2.zip -d /tmp/pmis-zip\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "ls -la /tmp/pmis-zip\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "cat /tmp/pmis-zip/* 2>/dev/null | head -100\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "rm -rf /tmp/pmis-zip\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "exit\r"
+expect -re "admin1@pmisweb:.*\\$"
+send "exit\r"
+expect eof

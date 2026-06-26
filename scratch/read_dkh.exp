@@ -1,0 +1,32 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Reading DKhMiR3g.js context ---"
+send "sudo docker exec pmis-frontend grep -o -F \"/auth/sso-validate?token=\" /usr/share/nginx/html/_nuxt/DKhMiR3g.js\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+send "sudo docker exec pmis-frontend grep -o -E \".{0,200}/auth/sso-validate.{0,200}\" /usr/share/nginx/html/_nuxt/DKhMiR3g.js\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "exit\r"
+expect -re "admin1@pmisweb:.*\\$"
+send "exit\r"
+expect eof

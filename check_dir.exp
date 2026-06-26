@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+set timeout 30
+spawn ssh -o ProxyJump=admin1@14.207.128.138 -o StrictHostKeyChecking=no admin1@192.168.10.207
+expect "*assword*"
+send "DigitalSm@rt\r"
+expect "*assword*"
+send "DigitalSm@rt\r"
+expect "$"
+send "ls -la /home/admin1/sso-backend/dist/\r"
+expect "$"
+send "exit\r"
+expect eof

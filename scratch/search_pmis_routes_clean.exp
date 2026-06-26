@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Finding Nuxt page paths and corresponding js files ---"
+send "sudo docker exec pmis-frontend grep -o -E -H \"path:\\\"\[a-zA-Z0-9_/:-]*\\\"\" -r /usr/share/nginx/html/ 2>/dev/null | grep -i -E \"sso|portal|login\" | head -n 40\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Search for occurrences of portal-sso page mapping ---"
+send "sudo docker exec pmis-frontend grep -o -H \"portal-sso\" -r /usr/share/nginx/html/ 2>/dev/null\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "exit\r"
+expect -re "admin1@pmisweb:.*\\$"
+send "exit\r"
+expect eof

@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@$host -o StrictHostKeyChecking=no $user@192.168.10.207
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+send "curl -s http://localhost:5000/datax/retrieveService | head -c 500\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

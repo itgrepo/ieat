@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "Listing sso-backend directory contents on server..."
+send "ls -la /home/admin1/sso-backend\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "Listing sso-backend/dist directory contents on server..."
+send "ls -la /home/admin1/sso-backend/dist\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "Checking modification times of auth.js in both places..."
+send "ls -la /home/admin1/sso-backend/routes/auth.js /home/admin1/sso-backend/dist/routes/auth.js\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

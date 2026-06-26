@@ -1,0 +1,39 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    "*\$*" { }
+}
+
+send "echo '=== PM2 STATUS ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S pm2 list 2>&1\r"
+expect "*\$*"
+
+send "echo '=== PM2 LOGS ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S pm2 logs sso-backend --lines 20 --nostream 2>&1\r"
+expect "*\$*"
+
+send "echo '=== LISTENING PORTS ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S ss -tlnp 2>&1\r"
+expect "*\$*"
+
+send "echo '=== ENV FILE ==='\r"
+expect "*\$*"
+send "cat /home/admin1/sso-backend/.env.production 2>&1\r"
+expect "*\$*"
+
+send "echo '=== LS DIST ==='\r"
+expect "*\$*"
+send "ls -la /home/admin1/sso-backend/dist/ 2>&1\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof

@@ -1,0 +1,14 @@
+[
+  {
+    "previlage_id": "1",
+    "previlage_name": "RootAdmin"
+  },
+  {
+    "previlage_id": "2",
+    "previlage_name": "Admin"
+  },
+  {
+    "previlage_id": "3",
+    "previlage_name": "User"
+  }
+]

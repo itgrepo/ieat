@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn scp -o StrictHostKeyChecking=no /tmp/sso-portal-nginx.conf $user@$host:/tmp/sso-portal-nginx.conf
+expect "*assword:*"
+send "$pass\r"
+expect eof
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\\$"
+
+send "sudo cp /tmp/sso-portal-nginx.conf /etc/nginx/sites-available/sso-portal\r"
+expect {
+    "*assword for admin1:*" { send "$pass\r"; exp_continue }
+    "*\\\$" {}
+}
+
+send "sudo nginx -t\r"
+expect "*\\\$"
+
+send "sudo systemctl reload nginx\r"
+expect "*\\\$"
+
+send "exit\r"
+expect eof

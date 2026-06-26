@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartfrontend:.*\\$" {}
+}
+
+puts "\n--- Reading Nginx site config on sso gateway 14.207.128.138 ---"
+send "cat /etc/nginx/sites-enabled/*\r"
+expect -re "admin1@digitalsmartfrontend:.*\\$"
+
+send "exit\r"
+expect eof

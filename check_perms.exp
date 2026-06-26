@@ -1,0 +1,17 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*assword:*"
+send "$pass\r"
+expect "$"
+
+send "ls -la /home/admin1/sso-backend/dist/routes/sso.js\r"
+expect "$"
+send "exit\r"
+expect eof

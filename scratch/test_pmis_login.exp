@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Testing local login on PMIS UAT ---"
+send "curl -i -X POST https://pmis-uat-phase2.wisdomcloud.net/api/v1/auth/login -H 'Content-Type: application/json' -d '{\"email\": \"dsp@wisdomvast.com\", \"password\": \"Password1234\"}'\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+send "exit\r"
+expect eof

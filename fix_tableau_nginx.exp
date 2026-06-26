@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\\$"
+
+send "sudo sed -i '/location \\/backend\\/ {/i \\    location ~ ^\\/(views|vizql|javascripts|images|sidecar|t|wg|auth)\\/ {\\n        proxy_pass http://192.168.9.157;\\n        proxy_set_header Host \\\$host;\\n        proxy_set_header X-Forwarded-Host \\\$host;\\n        proxy_set_header X-Forwarded-Server \\\$host;\\n        proxy_set_header X-Forwarded-For \\\$proxy_add_x_forwarded_for;\\n        proxy_set_header X-Forwarded-Proto \\\$scheme;\\n    }\\n' /etc/nginx/sites-available/sso-portal\r"
+expect "*assword for admin1:*" { send "$pass\r"; exp_continue } "*\\\$"
+
+send "sudo systemctl reload nginx\r"
+expect "*\\\$"
+
+send "exit\r"
+expect eof

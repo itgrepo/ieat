@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send -- "$pass\r"
+expect "*\$*"
+
+send "sudo bash /tmp/setup_nginx.sh\r"
+expect {
+    "*password for $user:*" {
+        send -- "$pass\r"
+        exp_continue
+    }
+    "*\$*" {}
+}
+
+send "exit\r"
+expect eof

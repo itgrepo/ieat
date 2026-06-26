@@ -1,0 +1,38 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@$host -o StrictHostKeyChecking=no $user@192.168.10.207
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+# Fix dataset 1 URL
+send "sed -i 's|http://192.168.9.157/#/signin?redirect=%2Fviews%2F1_%2Fsheet0|/tableau/views/1_/sheet0?:embed=yes\\&:toolbar=no|g' /home/admin1/sso-backend/data/datasets.json\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+# Verify fix
+send "grep dashboard /home/admin1/sso-backend/data/datasets.json | head -2\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+# Restart backend
+send "sudo systemctl restart sso-backend.service\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+# Wait for restart
+send "sleep 2\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+# Test API
+send "curl -s http://localhost:5000/datax/retrieveService | grep -oP 'external_dashboard_url.{0,80}' | head -3\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

@@ -1,0 +1,74 @@
+[
+  {
+    "previlage_id": "1",
+    "menu_name_id": "1",
+    "menu_name": "Data Catalog",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "1",
+    "menu_name_id": "2",
+    "menu_name": "Analytics & Dashboard",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "1",
+    "menu_name_id": "3",
+    "menu_name": "Identity Providers",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "1",
+    "menu_name_id": "4",
+    "menu_name": "Audit Logs",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "2",
+    "menu_name_id": "1",
+    "menu_name": "Data Catalog",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "2",
+    "menu_name_id": "2",
+    "menu_name": "Analytics & Dashboard",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "2",
+    "menu_name_id": "3",
+    "menu_name": "Identity Providers",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "2",
+    "menu_name_id": "4",
+    "menu_name": "Audit Logs",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "3",
+    "menu_name_id": "1",
+    "menu_name": "Data Catalog",
+    "value": "Yes"
+  },
+  {
+    "previlage_id": "3",
+    "menu_name_id": "2",
+    "menu_name": "Analytics & Dashboard",
+    "value": "No"
+  },
+  {
+    "previlage_id": "3",
+    "menu_name_id": "3",
+    "menu_name": "Identity Providers",
+    "value": "No"
+  },
+  {
+    "previlage_id": "3",
+    "menu_name_id": "4",
+    "menu_name": "Audit Logs",
+    "value": "No"
+  }
+]

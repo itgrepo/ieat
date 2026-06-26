@@ -1,0 +1,57 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+set file "sso-backend.tar.gz"
+set target_dir "/home/admin1/sso-backend"
+
+puts "🚀 Starting backend deployment to $host..."
+
+# 1. Upload
+spawn scp -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no sso-backend/$file sso-backend/package.json $user@$host:/tmp/
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    eof
+}
+
+# 2. Extract and Restart
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\\$" { }
+}
+
+puts "🛠️  Updating backend in $target_dir..."
+send "mkdir -p $target_dir/dist $target_dir/data\r"
+expect -re "admin1@digitalsmartbackend:.*\\\$"
+
+send "tar -xzf /tmp/$file -C $target_dir\r"
+expect -re "admin1@digitalsmartbackend:.*\\\$"
+
+send "cp /tmp/package.json $target_dir/\r"
+expect -re "admin1@digitalsmartbackend:.*\\\$"
+
+puts "📦 Installing backend dependencies..."
+send "cd $target_dir && npm install --production\r"
+expect -re "admin1@digitalsmartbackend:.*\\\$"
+
+# Kill old PM2 processes and restart via systemd
+send "pm2 kill 2>/dev/null; pkill -f 'node dist/index' 2>/dev/null; sleep 2\r"
+expect -re "admin1@digitalsmartbackend:.*\\\$"
+
+send "sudo systemctl restart sso-backend.service\r"
+expect {
+    "*assword*" { send -- "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\\$" {}
+}
+
+send "rm /tmp/$file /tmp/package.json\r"
+expect -re "admin1@digitalsmartbackend:.*\\\$"
+
+send "exit\r"
+expect eof
+
+puts "🎉 Backend deployment successful!"

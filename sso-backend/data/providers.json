@@ -1,0 +1,17 @@
+[
+  {
+    "id": "google-sso",
+    "name": "Google Workspace",
+    "entityId": "https://accounts.google.com/o/saml2?idpid=C012345",
+    "ssoUrl": "https://accounts.google.com/o/saml2/idp?idpid=C012345",
+    "acsUrl": "http://localhost:3000/auth/saml/google-sso/acs",
+    "x509Certificate": "MII...cert-content...",
+    "attributeMapping": {
+      "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+      "fullName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+    },
+    "status": "active",
+    "wantAssertionsSigned": true,
+    "wantResponseSigned": true
+  }
+]

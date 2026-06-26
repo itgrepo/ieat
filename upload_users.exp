@@ -1,0 +1,34 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+# Upload cleaned users.json
+spawn scp -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no sso-backend/data/users.json $user@$host:/home/admin1/sso-backend/data/users.json
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    eof
+}
+
+puts "✅ users.json uploaded!"
+
+# Restart backend
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\\$" { }
+}
+
+send "sudo systemctl restart sso-backend.service\r"
+expect {
+    "*assword*" { send -- "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\\$" {}
+}
+
+send "exit\r"
+expect eof
+
+puts "✅ Backend restarted!"

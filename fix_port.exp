@@ -1,0 +1,31 @@
+#!/usr/bin/expect -f
+set timeout 60
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    "*\$*" { }
+}
+
+# Kill EVERYTHING on port 5000
+send "sudo fuser -k 5000/tcp 2>/dev/null; pm2 kill 2>/dev/null; pkill -9 -f 'node dist' 2>/dev/null; sleep 2; echo PORT_FREED\r"
+expect {
+    "*password*" { send -- "$pass\r"; exp_continue }
+    "PORT_FREED*\$*" {}
+}
+
+# Now start fresh with systemd only
+send "sudo systemctl restart sso-backend.service\r"
+expect "*\$*"
+
+send "sleep 4 && sudo systemctl status sso-backend --no-pager -l\r"
+expect "*\$*"
+
+send "curl -s http://localhost:5000/health && echo ' OK'\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof

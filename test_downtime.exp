@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+set timeout 350
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    "*\$*" { }
+}
+
+send "sudo systemctl stop sso-backend.service\r"
+expect {
+    "*assword*" { send -- "$pass\r"; exp_continue }
+    "*\$*" {}
+}
+
+puts "=================================================="
+puts "SERVICE STOPPED. WAITING 300 SECONDS (5 MINUTES)..."
+puts "=================================================="
+sleep 300
+
+send "sudo systemctl start sso-backend.service\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof
+puts "SERVICE RESTORED."

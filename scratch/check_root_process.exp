@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "Checking parent process of root node..."
+send "ps -ef | grep 'node /home/admin1/sso-backend/dist/index.js'\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "Checking PM2 as root..."
+send "sudo pm2 status\r"
+expect {
+    "*password*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "Checking root crontab..."
+send "sudo crontab -l\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

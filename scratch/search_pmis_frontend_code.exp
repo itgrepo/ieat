@@ -1,0 +1,41 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Grep for sso-validate in Nuxt frontend build files ---"
+send "sudo docker exec pmis-frontend grep -rn \"sso-validate\" /usr/share/nginx/html/ 2>/dev/null | head -n 30\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Grep for ssoValidate in Nuxt frontend build files ---"
+send "sudo docker exec pmis-frontend grep -rn \"ssoValidate\" /usr/share/nginx/html/ 2>/dev/null | head -n 30\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+puts "\n--- Grep for token query parsing in Nuxt frontend build files ---"
+send "sudo docker exec pmis-frontend grep -rn \"query.token\" /usr/share/nginx/html/ 2>/dev/null | head -n 30\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+puts "\n--- Grep for window.location or route query parsing in Nuxt frontend build files ---"
+send "sudo docker exec pmis-frontend grep -o -E -r \"/api/\[a-zA-Z0-9_/-]*\" /usr/share/nginx/html/ 2>/dev/null | grep -i sso | head -n 30\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "exit\r"
+expect -re "admin1@pmisweb:.*\\$"
+send "exit\r"
+expect eof

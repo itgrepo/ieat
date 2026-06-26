@@ -1,0 +1,37 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$"
+
+# Check relative paths that Tableau HTML uses
+send "echo '=== jquery.min.js (relative from /tableau/) ===' && curl -sI http://localhost/tableau/jquery.min.js 2>&1 | head -5\r"
+expect "*\\$"
+
+send "echo '=== vendors-vizportal.css (relative from /tableau/) ===' && curl -sI http://localhost/tableau/vendors-vizportal.css 2>&1 | head -5\r"
+expect "*\\$"
+
+send "echo '=== vizportal.js (relative from /tableau/) ===' && curl -sI http://localhost/tableau/vizportal.js 2>&1 | head -5\r"
+expect "*\\$"
+
+send "echo '=== /javascripts/api/tableau-2.min.js (absolute) ===' && curl -sI http://localhost/javascripts/api/tableau-2.min.js 2>&1 | head -5\r"
+expect "*\\$"
+
+# Check direct from Tableau
+send "echo '=== Direct from Tableau: jquery.min.js ===' && curl -sI http://192.168.9.157/jquery.min.js 2>&1 | head -5\r"
+expect "*\\$"
+
+# Check nginx access log for iframe requests
+send "echo '=== Last nginx access log entries for tableau ===' && sudo grep -i 'tableau\\|vizportal\\|vizql' /var/log/nginx/access.log 2>&1 | tail -10\r"
+expect {
+    "*assword for admin1:*" { send "$pass\r"; exp_continue }
+    "*\\$" {}
+}
+
+send "exit\r"
+expect eof

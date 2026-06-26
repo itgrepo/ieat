@@ -1,0 +1,25 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn scp -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no setup_backend.sh $user@$host:/tmp/
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    eof
+}
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    "*\$*" { }
+}
+
+send "echo '$pass' | sudo -S bash /tmp/setup_backend.sh\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof

@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "Resetting user dsp@wisdomvast.com from local DB..."
+send "curl -s -X POST http://localhost:5000/api/sso/mock-login -H \"Content-Type: application/json\" -d '{\"username\":\"dsp@wisdomvast.com\", \"reset\": true}'\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\nTriggering local login for dsp@wisdomvast.com to JIT-provision..."
+send "curl -s -X POST http://localhost:5000/auth/saml/local/login -H \"Content-Type: application/json\" -d '{\"username\":\"dsp@wisdomvast.com\"}'\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\nChecking users.json contents again..."
+send "cat /home/admin1/sso-backend/data/users.json\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "\n--- Backend Logs (Last 200 Lines) ---"
+send "sudo journalctl -u sso-backend.service -n 200 --no-pager\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+send "exit\r"
+expect eof

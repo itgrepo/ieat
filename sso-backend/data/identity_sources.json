@@ -1,0 +1,70 @@
+[
+  {
+    "id": "src_001",
+    "sourceKey": "google-sso",
+    "sourceName": "Google Workspace",
+    "protocolType": "saml",
+    "displayName": "Google SSO (Corporate)",
+    "description": "Main SSO for MTP Employees via Google Workspace",
+    "status": "active",
+    "config": {
+      "entityId": "https://accounts.google.com/o/saml2?idpid=C012345",
+      "ssoUrl": "https://accounts.google.com/o/saml2/idp?idpid=C012345",
+      "acsUrl": "http://localhost:3000/auth/saml/google-sso/acs",
+      "certificate": "MII...mock-cert...",
+      "wantAssertionsSigned": true
+    },
+    "mapping": {
+      "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+      "full_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+      "username": "email"
+    },
+    "capabilities": {
+      "userSync": true,
+      "emailSync": true
+    },
+    "createdAt": "2026-03-26T10:00:00Z",
+    "updatedAt": "2026-03-26T10:00:00Z"
+  },
+  {
+    "id": "f02i9cg6a",
+    "sourceName": "IEAT",
+    "sourceKey": "ieat",
+    "protocolType": "saml",
+    "displayName": "IEAT",
+    "description": "",
+    "status": "active",
+    "config": {},
+    "mapping": {},
+    "capabilities": {
+      "userSync": true,
+      "emailSync": true
+    },
+    "fallback": {
+      "defaultRole": "User"
+    },
+    "createdAt": "2026-03-26T06:51:58.356Z",
+    "updatedAt": "2026-03-26T06:51:58.356Z"
+  },
+  {
+    "id": "t6ah2nmqv",
+    "sourceName": "Corporate SSO",
+    "sourceKey": "corporate-sso",
+    "protocolType": "saml",
+    "displayName": "Corporate SSO",
+    "description": "",
+    "status": "active",
+    "config": {},
+    "mapping": {},
+    "capabilities": {
+      "userSync": true,
+      "emailSync": true
+    },
+    "fallback": {
+      "defaultRole": "User"
+    },
+    "readinessStatus": "draft",
+    "createdAt": "2026-03-26T07:54:19.092Z",
+    "updatedAt": "2026-03-26T08:08:22.297Z"
+  }
+]

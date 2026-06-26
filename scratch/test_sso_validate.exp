@@ -1,0 +1,25 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Testing public-facing sso-validate endpoint ---"
+send "curl -i \"https://pmis-uat-phase2.wisdomcloud.net/api/auth/sso-validate?token=test\"\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- Testing internal docker direct sso-validate endpoint ---"
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217 \"curl -i http://localhost:5001/auth/sso-validate?token=test\"\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "exit\r"
+expect eof

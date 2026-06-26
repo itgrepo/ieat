@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- PMIS Server: nginx sites-available files ---"
+send "ls -la /etc/nginx/sites-enabled/ /etc/nginx/conf.d/\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- PMIS Server: systemctl status pmis-server ---"
+send "sudo systemctl status pmis-server\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- PMIS Server: systemctl status pmis-* or list services ---"
+send "sudo systemctl list-units --type=service | grep pmis\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- PMIS Server: search for pmis config files ---"
+send "find /home/admin1 -name \".env\" -o -name \"config.json\" -o -name \"development.json\" -o -name \"production.json\" 2>/dev/null | head -10\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+send "exit\r"
+expect eof

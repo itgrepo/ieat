@@ -1,0 +1,58 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+puts "🚀 Starting SSL deployment to $host..."
+
+# 1. Upload the files
+spawn scp -o StrictHostKeyChecking=no certs/IEAT-CA-2026/fullchain.pem certs/IEAT-CA-2026/server.key setup_nginx.sh $user@$host:/tmp/
+expect "*assword:*"
+send "$pass\r"
+expect eof
+
+# 2. Extract on server
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send -- "$pass\r"
+expect "*\$*"
+
+puts "🛠️  Authenticating sudo..."
+send "sudo -v\r"
+expect {
+    "*password for $user:*" { 
+        send -- "$pass\r" 
+        exp_continue 
+    }
+    "Sorry, try again" {
+        puts "\n❌ Sudo password failed."
+        exit 1
+    }
+    "*\$*" {
+        puts "\n✅ Sudo authenticated."
+    }
+}
+
+send "sudo mkdir -p /etc/nginx/ssl\r"
+expect "*\$*"
+
+send "sudo cp /tmp/fullchain.pem /etc/nginx/ssl/fullchain.pem\r"
+expect "*\$*"
+
+send "sudo cp /tmp/server.key /etc/nginx/ssl/server.key\r"
+expect "*\$*"
+
+send "sudo chmod 600 /etc/nginx/ssl/server.key\r"
+expect "*\$*"
+
+send "sudo cp /tmp/setup_nginx.sh /var/www/html/setup_nginx.sh\r"
+expect "*\$*"
+
+send "sudo bash /var/www/html/setup_nginx.sh\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof
+
+puts "🎉 SSL Deployment successful!"

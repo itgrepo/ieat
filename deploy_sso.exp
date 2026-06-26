@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+set file "sso-portal.tar.gz"
+
+puts "🚀 Starting deployment to $host..."
+
+spawn scp -o StrictHostKeyChecking=no $file $user@$host:/tmp/
+expect "*assword:*"
+send "$pass\r"
+expect eof
+
+puts "🛠️  Extracting files..."
+spawn ssh -o StrictHostKeyChecking=no $user@$host "echo '$pass' | sudo -S rm -rf /var/www/html/sso-portal/assets /var/www/html/sso-portal/dist && echo '$pass' | sudo -S mkdir -p /var/www/html/sso-portal && echo '$pass' | sudo -S tar -xzf /tmp/$file -C /var/www/html/sso-portal --strip-components=1 && echo '$pass' | sudo -S chown -R www-data:www-data /var/www/html/sso-portal && echo '$pass' | sudo -S rm /tmp/$file"
+expect "*assword:*"
+send "$pass\r"
+expect eof
+
+puts "🎉 Deployment successful!"

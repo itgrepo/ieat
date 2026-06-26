@@ -1,0 +1,17 @@
+{
+  "success_full": {
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress": "somchai@mtp.go.th",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "Somchai Jaidee",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department": "IT Operations",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role": "Admin",
+    "nameID": "somchai_idp_001"
+  },
+  "partial_data": {
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress": "manee@mtp.go.th",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "Manee Meebut",
+    "nameID": "manee_idp_002"
+  },
+  "minimal": {
+    "nameID": "guest_user_003"
+  }
+}

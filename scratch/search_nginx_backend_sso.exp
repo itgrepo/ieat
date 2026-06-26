@@ -1,0 +1,25 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Search for sso-validate in Nginx UAT backend access log ---"
+send "sudo grep -rn \"sso-validate\" /var/log/nginx-pmis-uat-backend/access.log 2>/dev/null | head -n 50\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Search for auth in Nginx UAT backend access log ---"
+send "sudo grep -rn \"auth\" /var/log/nginx-pmis-uat-backend/access.log 2>/dev/null | head -n 50\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+send "exit\r"
+expect eof

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "ab8cdda3-82cb-4691-919c-c8dbbba41ebd",
+    "userId": "8aef81ba-28f9-4a2d-9b9d-f7845ada439f",
+    "providerId": "google-idp",
+    "externalId": "ext-123",
+    "providerType": "saml",
+    "lastLogin": "2026-04-07T03:25:37.241Z"
+  }
+]

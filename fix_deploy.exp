@@ -1,0 +1,16 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$*"
+
+send "echo $pass | sudo -S rm -rf /var/www/html/sso-portal/assets && echo $pass | sudo -S tar -xzf /tmp/sso-portal.tar.gz -C /var/www/html/sso-portal --strip-components=1 && echo $pass | sudo -S chown -R www-data:www-data /var/www/html/sso-portal\r"
+expect "*\\$*"
+
+send "exit\r"
+expect eof

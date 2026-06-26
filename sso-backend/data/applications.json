@@ -1,0 +1,6 @@
+[
+  { "id": "1", "name": "MTP Port Net", "description": "Centralized maritime and port operations system", "category": "Operations", "url": "#", "accent": "#3b82f6", "tags": ["Core", "Active"] },
+  { "id": "2", "name": "PMIS", "description": "Personal Management Information System", "category": "Human Resources", "url": "#", "accent": "#ec4899", "tags": ["Internal"] },
+  { "id": "3", "name": "VTMS", "description": "Vessel Traffic Management System", "category": "Operations", "url": "#", "accent": "#10b981", "tags": ["Marine", "Critical"] },
+  { "id": "4", "name": "e-Surveillance", "description": "Electronic surveillance and monitoring", "category": "Security", "url": "#", "accent": "#8b5cf6", "tags": ["Safety"] }
+]

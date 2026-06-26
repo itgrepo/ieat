@@ -1,0 +1,61 @@
+#!/usr/bin/expect -f
+set timeout 300
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+puts "🚀 Fixing backend permanently..."
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    "*\$*" { }
+}
+
+# Step 1: Kill old processes
+send "pm2 kill 2>/dev/null; pkill -f 'node dist/index' 2>/dev/null; sleep 1; echo DONE_KILL\r"
+expect "DONE_KILL*\$*"
+
+# Step 2: Find node path
+send "which node\r"
+expect -re "(/.*node)" {
+    set node_path $expect_out(1,string)
+}
+expect "*\$*"
+puts "Node path: $node_path"
+
+# Step 3: Write systemd service file
+send "cat > /tmp/sso-backend.service << 'EOF'\n\[Unit]\nDescription=SSO Backend API Server\nAfter=network.target\n\n\[Service]\nType=simple\nUser=admin1\nWorkingDirectory=/home/admin1/sso-backend\nExecStart=/usr/bin/node /home/admin1/sso-backend/dist/index.js\nRestart=always\nRestartSec=3\nEnvironment=NODE_ENV=production\nEnvironment=PORT=5000\nStandardOutput=journal\nStandardError=journal\nSyslogIdentifier=sso-backend\n\n\[Install]\nWantedBy=multi-user.target\nEOF\r"
+expect "*\$*"
+
+send "sudo cp /tmp/sso-backend.service /etc/systemd/system/sso-backend.service\r"
+expect {
+    "*password for*" { send -- "$pass\r"; exp_continue }
+    "*\$*" {}
+}
+
+# Step 4: Reload, enable, start
+send "sudo systemctl daemon-reload\r"
+expect "*\$*"
+
+send "sudo systemctl enable sso-backend.service\r"
+expect "*\$*"
+
+send "sudo systemctl restart sso-backend.service\r"
+expect "*\$*"
+
+# Step 5: Check
+send "sleep 3 && sudo systemctl status sso-backend --no-pager -l\r"
+expect "*\$*"
+
+send "curl -s http://localhost:5000/api/applications | head -c 300\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof
+
+puts "\n🎉 Backend is now a systemd service! It will:"
+puts "   ✅ Auto-restart within 3 seconds if it crashes"
+puts "   ✅ Auto-start when the server reboots"
+puts "   ✅ Log to system journal (viewable with: journalctl -u sso-backend)"

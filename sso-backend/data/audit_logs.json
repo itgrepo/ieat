@@ -1,0 +1,143 @@
+[
+  {
+    "id": "0b0ngncsv",
+    "timestamp": "2026-05-20T01:36:18.876Z",
+    "event": "SSO_TOKEN_ISSUED",
+    "details": {
+      "username": "pmis_officer",
+      "applicationId": "PMIS"
+    }
+  },
+  {
+    "id": "nktluyqxy",
+    "timestamp": "2026-05-20T01:36:21.494Z",
+    "event": "SSO_SOAP_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "pmis_officer",
+      "applicationId": "PMIS"
+    }
+  },
+  {
+    "id": "jb6z7wlqs",
+    "timestamp": "2026-05-20T01:36:33.460Z",
+    "event": "SSO_TOKEN_ISSUED",
+    "details": {
+      "username": "pmis_officer",
+      "applicationId": "PMIS"
+    }
+  },
+  {
+    "id": "hsra2rcc5",
+    "timestamp": "2026-05-20T01:36:33.541Z",
+    "event": "SSO_SOAP_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "pmis_officer",
+      "applicationId": "PMIS"
+    }
+  },
+  {
+    "id": "qc2ga049n",
+    "timestamp": "2026-05-20T01:36:42.157Z",
+    "event": "SSO_USER_RESET_SUCCESS",
+    "details": {
+      "username": "pmis_officer",
+      "userId": "a214a876-9b6f-4cac-8438-603b8d26f8c7"
+    }
+  },
+  {
+    "id": "muzgc41t7",
+    "timestamp": "2026-05-22T02:32:11.885Z",
+    "event": "SSO_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "admin",
+      "applicationId": "PMIS",
+      "endpoint": "/api/validatetoken"
+    }
+  },
+  {
+    "id": "oxlku3oqb",
+    "timestamp": "2026-05-22T02:32:11.887Z",
+    "event": "SSO_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "admin",
+      "applicationId": "PMIS",
+      "endpoint": "/api/validatetoken"
+    }
+  },
+  {
+    "id": "m8ffipyv2",
+    "timestamp": "2026-05-22T02:32:11.888Z",
+    "event": "SSO_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "admin",
+      "applicationId": "PMIS",
+      "endpoint": "/api/validatetoken?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbl8wMDEiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBzbWFydHBvcnQubG9jYWwiLCJmdWxsTmFtZSI6IlN5c3RlbSBBZG1pbmlzdHJhdG9yIiwicm9sZSI6IkFkbWluIiwiYXBwbGljYXRpb25JZCI6IlBNSVMiLCJpYXQiOjE3Nzk0MTcxMzEsImV4cCI6MTc3OTQxNzQzMX0.xy2fmET7SmO8TuZBpHEyscTvHhKhK6i5doIy96fenxA"
+    }
+  },
+  {
+    "id": "4ktbxd4bo",
+    "timestamp": "2026-05-22T02:32:11.889Z",
+    "event": "SSO_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "admin",
+      "applicationId": "PMIS",
+      "endpoint": "/api/sso/validatetoken"
+    }
+  },
+  {
+    "id": "t7k0dl5aw",
+    "timestamp": "2026-05-22T02:32:11.890Z",
+    "event": "SSO_TOKEN_VALIDATION_SUCCESS",
+    "details": {
+      "username": "admin",
+      "applicationId": "PMIS",
+      "endpoint": "/api/sso/validatetoken?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbl8wMDEiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBzbWFydHBvcnQubG9jYWwiLCJmdWxsTmFtZSI6IlN5c3RlbSBBZG1pbmlzdHJhdG9yIiwicm9sZSI6IkFkbWluIiwiYXBwbGljYXRpb25JZCI6IlBNSVMiLCJpYXQiOjE3Nzk0MTcxMzEsImV4cCI6MTc3OTQxNzQzMX0.xy2fmET7SmO8TuZBpHEyscTvHhKhK6i5doIy96fenxA"
+    }
+  },
+  {
+    "id": "du4n1farh",
+    "timestamp": "2026-05-22T02:32:11.892Z",
+    "event": "SSO_TOKEN_VALIDATION_FAILED",
+    "details": {
+      "error": "jwt malformed",
+      "endpoint": "/api/validatetoken"
+    }
+  },
+  {
+    "id": "o16qr8qse",
+    "timestamp": "2026-05-22T02:59:41.429Z",
+    "event": "AUTH_ATTEMPT",
+    "details": {
+      "provider": "google-sso"
+    },
+    "userId": "unknown",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "myu3gdh3f",
+    "timestamp": "2026-05-22T03:00:43.083Z",
+    "event": "AUTH_ATTEMPT",
+    "details": {
+      "provider": "google-sso"
+    },
+    "userId": "unknown",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "iiitm7c1q",
+    "timestamp": "2026-05-22T03:00:43.107Z",
+    "event": "AUTH_FAILURE",
+    "details": {
+      "reason": "SAML_VALIDATION_FAILED",
+      "error": {}
+    }
+  },
+  {
+    "id": "gfw4yho3x",
+    "timestamp": "2026-06-18T06:29:15.863Z",
+    "event": "AUTH_LOCAL_SUCCESS",
+    "details": {
+      "username": "admin"
+    }
+  }
+]

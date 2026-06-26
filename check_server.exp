@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send -- "$pass\r"
+expect "*\$*"
+
+send "ls -la /var/www/html/sso-portal/\r"
+expect "*\$*"
+
+send "ls /var/www/html/sso-portal/assets/ | head -5\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof

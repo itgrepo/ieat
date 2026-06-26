@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+set timeout 10
+spawn ssh -o StrictHostKeyChecking=no admin1@14.207.128.138 "sudo ufw status; sudo systemctl status nginx --no-pager; curl -I http://localhost; ls -la /etc/nginx/sites-enabled/; cat /etc/nginx/sites-enabled/*"
+expect "*assword*"
+send "DigitalSm@rt\r"
+expect {
+    "*assword for admin1*" {
+        send "DigitalSm@rt\r"
+        exp_continue
+    }
+    eof
+}

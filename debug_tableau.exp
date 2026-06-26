@@ -1,0 +1,40 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$"
+
+# 1. Check if Tableau proxy HTML loads
+send "echo '=== 1. GET /tableau/ HTML body (first 50 lines) ===' && curl -s http://localhost/tableau/ 2>&1 | head -50\r"
+expect "*\\$"
+
+# 2. Check nginx error log for tableau issues
+send "echo '=== 2. Recent nginx errors ===' && sudo tail -20 /var/log/nginx/error.log 2>&1\r"
+expect {
+    "*assword for admin1:*" { send "$pass\r"; exp_continue }
+    "*\\$" {}
+}
+
+# 3. Check if a tableau JS asset loads through proxy
+send "echo '=== 3. Check a Tableau asset ===' && curl -sI http://localhost/javascripts/ 2>&1 | head -10\r"
+expect "*\\$"
+
+# 4. Check if vizql path works
+send "echo '=== 4. Check vizql path ===' && curl -sI http://localhost/vizql/ 2>&1 | head -10\r"
+expect "*\\$"
+
+# 5. Full response from /tableau/ through HTTPS (simulating browser)
+send "echo '=== 5. Check HTTPS /tableau/ ===' && curl -skI https://localhost/tableau/ 2>&1 | head -20\r"
+expect "*\\$"
+
+# 6. Check if there's a redirect happening
+send "echo '=== 6. Check redirect chain ===' && curl -sLI http://localhost/tableau/ 2>&1 | grep -E 'HTTP|Location|X-Frame|Content-Security'\r"
+expect "*\\$"
+
+send "exit\r"
+expect eof

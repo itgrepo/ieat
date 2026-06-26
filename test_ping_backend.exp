@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=admin1@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*assword:*"
+send "$pass\r"
+expect "*\\\$"
+
+send "ping -c 3 192.168.9.157\r"
+expect "*\\\$"
+
+send "exit\r"
+expect eof

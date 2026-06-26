@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send -- "$pass\r"
+expect "*\$*"
+
+send "pm2 logs sso-backend --lines 100 || sudo docker logs sso-backend\r"
+expect {
+    "*password for admin1*" {
+        send -- "$pass\r"
+        exp_continue
+    }
+    "*\\\$*" {}
+}
+
+send "exit\r"
+expect eof

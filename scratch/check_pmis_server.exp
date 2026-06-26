@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- PMIS Server: running docker containers ---"
+send "sudo docker ps\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- PMIS Server: running pm2 processes ---"
+send "pm2 status\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- PMIS Server: active listening ports ---"
+send "sudo ss -tlnp\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- PMIS Server: Nginx configuration ---"
+send "cat /etc/nginx/sites-enabled/*\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+send "exit\r"
+expect eof

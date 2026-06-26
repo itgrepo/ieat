@@ -1,0 +1,26 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host1 "14.207.128.138"
+set host2 "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host1
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$"
+puts "\n--- Time on Gateway Server ---"
+send "date\r"
+expect -re "admin1@digitalsmartfrontend:.*\\$"
+send "exit\r"
+expect eof
+
+spawn ssh -o ProxyJump=$user@$host1 -o StrictHostKeyChecking=no $user@$host2
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$"
+puts "\n--- Time on Backend Server ---"
+send "date\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+send "exit\r"
+expect eof

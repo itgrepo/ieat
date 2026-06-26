@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+set timeout 60
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    "*\$*" { }
+}
+
+send "pm2 kill 2>/dev/null; pkill -f 'node dist/index' 2>/dev/null; sleep 2; echo CLEANED\r"
+expect "CLEANED*\$*"
+
+send "sudo systemctl restart sso-backend.service\r"
+expect {
+    "*password*" { send -- "$pass\r"; exp_continue }
+    "*\$*" {}
+}
+
+send "sleep 5 && sudo systemctl status sso-backend --no-pager\r"
+expect "*\$*"
+
+send "curl -s http://localhost:5000/health\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof

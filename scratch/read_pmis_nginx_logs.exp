@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Nginx General Access Logs on 14.207.128.141 ---"
+send "sudo tail -n 50 /var/log/nginx-pmis-uat/access.log 2>/dev/null\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+puts "\n--- Nginx Backend Access Logs on 14.207.128.141 ---"
+send "sudo tail -n 50 /var/log/nginx-pmis-uat-backend/access.log 2>/dev/null\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+puts "\n--- Nginx CMS Access Logs on 14.207.128.141 ---"
+send "sudo tail -n 50 /var/log/nginx-pmis-uat-cms/access.log 2>/dev/null\r"
+expect -re "admin1@pmisweb:.*\\$"
+
+send "exit\r"
+expect eof

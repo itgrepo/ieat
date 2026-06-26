@@ -1,0 +1,58 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send -- "$pass\r"
+expect "*\$*"
+
+# Check NGINX status
+send "echo '=== NGINX STATUS ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S systemctl status nginx --no-pager 2>&1\r"
+expect "*\$*"
+
+# Check what's listening on ports
+send "echo '=== LISTENING PORTS ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S ss -tlnp 2>&1\r"
+expect "*\$*"
+
+# Check UFW status
+send "echo '=== UFW STATUS ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S ufw status verbose 2>&1\r"
+expect "*\$*"
+
+# Check iptables
+send "echo '=== IPTABLES ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S iptables -L INPUT -n --line-numbers 2>&1\r"
+expect "*\$*"
+
+# Test NGINX locally
+send "echo '=== CURL LOCAL TEST ==='\r"
+expect "*\$*"
+send "curl -sI http://localhost 2>&1\r"
+expect "*\$*"
+
+send "curl -sI http://localhost:8080 2>&1\r"
+expect "*\$*"
+
+# Check NGINX config
+send "echo '=== NGINX CONFIG TEST ==='\r"
+expect "*\$*"
+send "echo '$pass' | sudo -S nginx -t 2>&1\r"
+expect "*\$*"
+
+# Check if files exist
+send "echo '=== PORTAL FILES ==='\r"
+expect "*\$*"
+send "ls -la /var/www/html/sso-portal/ 2>&1\r"
+expect "*\$*"
+
+send "exit\r"
+expect eof

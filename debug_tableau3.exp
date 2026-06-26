@@ -1,0 +1,32 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$"
+
+# Check all nginx access log for external IPs (not localhost/127.0.0.1)
+send "echo '=== Recent external access logs ===' && sudo grep -v '127.0.0.1' /var/log/nginx/access.log 2>&1 | tail -20\r"
+expect {
+    "*assword for admin1:*" { send "$pass\r"; exp_continue }
+    "*\\$" {}
+}
+
+# Check if there are any HTTPS requests to /tableau/
+send "echo '=== HTTPS check ===' && sudo grep 'tableau' /var/log/nginx/access.log 2>&1 | grep -v '127.0.0.1' | tail -10\r"
+expect "*\\$"
+
+# Check the full nginx error log
+send "echo '=== Full nginx error log (last 30) ===' && sudo tail -30 /var/log/nginx/error.log 2>&1\r"
+expect "*\\$"
+
+# Check external access to HTTPS /tableau/
+send "echo '=== curl from external IP to HTTPS ===' && curl -skI https://dsp.ieat.go.th/tableau/ 2>&1 | head -20\r"
+expect "*\\$"
+
+send "exit\r"
+expect eof

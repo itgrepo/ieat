@@ -1,0 +1,42 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+puts "Getting PMIS token..."
+send "TOKEN=\$(curl -s \"https://pmis-uat-phase2.wisdomcloud.net/api/v1/auth/token/service?client_id=5ki7WM5zsQd4Qdx5&client_secret=NPbzqF23yRWl5SCSPxhx71Fzu0E5MnPp\" | grep -o '\"access_token\":\"\[^\"]*\"' | cut -d'\"' -f4)\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "echo \"Token: \$TOKEN\"\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\n--- Test 1: POST /api/v1/user/validate (Spec REST) ---"
+send "curl -i -X POST https://pmis-uat-phase2.wisdomcloud.net/api/v1/user/validate -H \"Authorization: Bearer \$TOKEN\" -H 'Content-Type: application/json' -d '{\"username\": \"dsp@wisdomvast.com\"}'\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\n--- Test 2: GET /api/v1/user/validate ---"
+send "curl -i -X GET \"https://pmis-uat-phase2.wisdomcloud.net/api/v1/user/validate?username=dsp@wisdomvast.com\" -H \"Authorization: Bearer \$TOKEN\"\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\n--- Test 3: POST /api/v1/users/validate ---"
+send "curl -i -X POST https://pmis-uat-phase2.wisdomcloud.net/api/v1/users/validate -H \"Authorization: Bearer \$TOKEN\" -H 'Content-Type: application/json' -d '{\"username\": \"dsp@wisdomvast.com\"}'\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\n--- Test 4: GET /api/v1/users/validate ---"
+send "curl -i -X GET \"https://pmis-uat-phase2.wisdomcloud.net/api/v1/users/validate?username=dsp@wisdomvast.com\" -H \"Authorization: Bearer \$TOKEN\"\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+puts "\n--- Test 5: POST /api/v1/user/validate-user ---"
+send "curl -i -X POST https://pmis-uat-phase2.wisdomcloud.net/api/v1/user/validate-user -H \"Authorization: Bearer \$TOKEN\" -H 'Content-Type: application/json' -d '{\"username\": \"dsp@wisdomvast.com\"}'\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "exit\r"
+expect eof

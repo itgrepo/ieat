@@ -1,0 +1,107 @@
+[
+  {
+    "id": "8aef81ba-28f9-4a2d-9b9d-f7845ada439f",
+    "username": "testuser",
+    "email": "test@example.com",
+    "fullName": "Updated Test User",
+    "department": "Testing",
+    "role": "Admin",
+    "status": "active"
+  },
+  {
+    "id": "admin_001",
+    "username": "admin",
+    "email": "admin@smartport.local",
+    "fullName": "System Administrator",
+    "role": "Admin",
+    "status": "active"
+  },
+  {
+    "id": "pmis_dsp_user_001",
+    "username": "dsp@wisdomvast.com",
+    "email": "dsp@wisdomvast.com",
+    "fullName": "Wisdomvast TestUser",
+    "department": "PMIS Department",
+    "role": "User",
+    "status": "active"
+  },
+  {
+    "id": "bfb8c8a1-f72c-43f6-919e-71739b26bda6",
+    "username": "test001",
+    "email": "test001@gmail.com",
+    "password": "P@ssw0rd1234",
+    "fullName": "test001",
+    "role": "User",
+    "department": "finance",
+    "status": "active",
+    "createdAt": "2026-06-17T11:43:27.842Z"
+  },
+  {
+    "id": "e4e6dacb-cf30-422b-8904-c66afbe84c09",
+    "username": "admin2",
+    "email": "admin@gmail.com",
+    "password": "admin",
+    "fullName": "admin2",
+    "role": "admin",
+    "department": "finance",
+    "status": "active",
+    "createdAt": "2026-06-18T03:12:45.025Z"
+  },
+  {
+    "id": "902ca4ed-32b5-43a3-9fc1-113b94533970",
+    "username": "superAdmin1@mail.com",
+    "email": "superAdmin1@mail.com",
+    "fullName": "PMIS User (superAdmin1@mail.com)",
+    "department": "Super Admin",
+    "role": "User",
+    "status": "active"
+  },
+  {
+    "id": "5a9e85b0-7f8a-44a3-86d9-8c0d68d66937",
+    "username": "agency2@mail.com",
+    "email": "agency2@mail.com",
+    "fullName": "PMIS User (agency2@mail.com)",
+    "department": "Agency",
+    "role": "User",
+    "status": "active"
+  },
+  {
+    "id": "ac4baeb7-e974-4cd6-b272-e4a61d6660fd",
+    "username": "determine@mail.com",
+    "email": "determine@mail.com",
+    "fullName": "PMIS User (determine@mail.com)",
+    "department": "เจ้าหน้าที่ตรวจคำร้อง",
+    "role": "User",
+    "status": "active"
+  },
+  {
+    "id": "fa0cf58b-1665-4ae1-b5ee-191324895ecf",
+    "username": "approvestate@mail.com",
+    "email": "approvestate@mail.com",
+    "fullName": "PMIS User (approvestate@mail.com)",
+    "department": "เจ้าหน้าที่อนุมัติใบคำร้องและสถิติ",
+    "role": "User",
+    "status": "active"
+  },
+  {
+    "id": "c1922cb8-0484-492d-8daa-b116b20baf9d",
+    "username": "VTMStest",
+    "email": "vtmstest@gmail.com",
+    "password": "P@ssw0rd1234",
+    "fullName": "VTMStest",
+    "role": "User",
+    "department": "it",
+    "status": "active",
+    "createdAt": "2026-06-18T08:35:36.260Z"
+  },
+  {
+    "id": "59c61359-b3bc-43ee-9634-3eb99809694b",
+    "username": "tester_mtp",
+    "email": "tester_mtp@mtpport.local",
+    "password": "@WSX3edc",
+    "fullName": "MTP User (tester_mtp)",
+    "department": "Staff",
+    "role": "User",
+    "status": "active"
+  }
+]

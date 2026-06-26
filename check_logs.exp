@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f
+set timeout 30
+spawn ssh -o ProxyJump=admin1@14.207.128.138 -o StrictHostKeyChecking=no admin1@192.168.10.207
+expect "*assword*"
+send "DigitalSm@rt\r"
+expect "*assword*"
+send "DigitalSm@rt\r"
+expect "$"
+send "ls -la /home/admin1/sso-backend/dist/routes/\r"
+expect "$"
+send "cat /home/admin1/sso-backend/dist/routes/sso.js | grep vtms\r"
+expect "$"
+send "sudo systemctl status sso-backend.service -l\r"
+expect "*assword*"
+send "DigitalSm@rt\r"
+expect "$"
+send "sudo journalctl -u sso-backend -n 50 --no-pager\r"
+expect "$"
+send "exit\r"
+expect eof

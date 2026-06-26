@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+set timeout 10
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@.*\\$" { puts "\n🎉 Successfully SSH'ed to PMIS server!" }
+    eof { puts "\n❌ Connection closed" }
+    timeout { puts "\n❌ SSH timed out" }
+}
+send "exit\r"
+expect eof

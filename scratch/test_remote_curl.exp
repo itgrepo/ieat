@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@$host -o StrictHostKeyChecking=no $user@192.168.10.207
+expect {
+    "*yes/no*" { send "yes\r"; exp_continue }
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\$" {}
+}
+
+send "curl -s -X GET \"http://localhost:5000/api/v1/SC-POP01\" -H \"apikey: 3cb0aeee-f6d7-43dd-a636-63fffbbbb747\" -H \"secretkey: 4a22a577f420f35aaa670cf76d9eecaf\" | head -c 200\r"
+expect -re "admin1@digitalsmartbackend:.*\\$"
+
+send "\r"
+send "exit\r"
+expect eof

@@ -1,0 +1,17 @@
+[
+  {
+    "group_id": "1",
+    "group_name": "Administrators",
+    "create_at": "2026-05-01T00:00:00.000Z"
+  },
+  {
+    "group_id": "2",
+    "group_name": "Data Providers",
+    "create_at": "2026-05-02T00:00:00.000Z"
+  },
+  {
+    "group_id": "3",
+    "group_name": "Data Consumers",
+    "create_at": "2026-05-03T00:00:00.000Z"
+  }
+]

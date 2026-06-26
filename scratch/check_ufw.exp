@@ -1,0 +1,24 @@
+#!/usr/bin/expect -f
+set timeout 15
+set host "14.207.128.138"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect "*assword:*"
+send "$pass\r"
+expect "*\\$"
+
+puts "\n--- UFW Firewall Status ---"
+send "sudo ufw status verbose\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartfrontend:.*\\$" {}
+}
+
+puts "\n--- Netstat Listening Ports ---"
+send "sudo netstat -tlnp\r"
+expect -re "admin1@digitalsmartfrontend:.*\\$"
+
+send "exit\r"
+expect eof

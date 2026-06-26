@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Search for localStorage.setItem(access_token) in pmis-frontend ---"
+send "sudo docker exec pmis-frontend grep -o -rn -E \".{0,80}access_token.{0,80}\" /usr/share/nginx/html/_nuxt/ 2>/dev/null | head -n 40\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Search for token query parameter extraction in pmis-frontend ---"
+send "sudo docker exec pmis-frontend grep -o -rn -E \".{0,80}query.{0,80}\" /usr/share/nginx/html/_nuxt/ 2>/dev/null | grep -i -E \"token|sso|login\" | head -n 40\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "exit\r"
+expect -re "admin1@pmisweb:.*\\$"
+send "exit\r"
+expect eof

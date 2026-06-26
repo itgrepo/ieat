@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+set timeout 30
+set host "192.168.10.207"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o ProxyJump=$user@14.207.128.138 -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*yes/no*" { send -- "yes\r"; exp_continue }
+    "*assword:*" { send -- "$pass\r"; exp_continue }
+    -re "admin1@digitalsmartbackend:.*\\\$" { }
+}
+
+puts "Sending curl..."
+send "curl -s \"https://pmis-uat-phase2.wisdomcloud.net/api/v1/auth/token/service?client_id=5ki7WM5zsQd4Qdx5&client_secret=NPbzqF23yRWl5SCSPxhx71Fzu0E5MnPp\"\r"
+expect "*\$*"
+puts "\nDone."
+send "exit\r"
+expect eof

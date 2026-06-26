@@ -1,0 +1,37 @@
+#!/usr/bin/expect -f
+set timeout 60
+set host "14.207.128.141"
+set user "admin1"
+set pass "DigitalSm@rt"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@pmisweb:.*\\$" {}
+}
+
+send "ssh -o StrictHostKeyChecking=no admin1@192.168.10.217\r"
+expect {
+    "*assword:*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Installing binutils (for strings) on 192.168.10.217 ---"
+send "sudo apt-get update && sudo apt-get install -y binutils\r"
+expect {
+    "*assword*" { send "$pass\r"; exp_continue }
+    -re "admin1@UatPMISweb:.*\\$" {}
+}
+
+puts "\n--- Finding strings containing HTTP or URL or validate or sso ---"
+send "strings /tmp/pmis-api | grep -E -i \"https?://\" | grep -E -i \"sso|auth|validate|ieat|wisdom|portal\" | head -n 100\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+puts "\n--- Cleaning up ---"
+send "sudo rm -f /tmp/pmis-api\r"
+expect -re "admin1@UatPMISweb:.*\\$"
+
+send "exit\r"
+expect -re "admin1@pmisweb:.*\\$"
+send "exit\r"
+expect eof
